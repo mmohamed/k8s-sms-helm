@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: controller
+  labels:
+    {{- include "labels" . | nindent 4 }}
+    run: controller
 spec:
   selector:
     matchLabels:
@@ -10,6 +13,7 @@ spec:
   template:
     metadata:
       labels:
+        {{- include "labels" . | nindent 8 }}
         run: controller
     spec:
       serviceAccountName: controller-access

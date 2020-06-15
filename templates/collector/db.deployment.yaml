@@ -2,25 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: db
+  labels:
+    {{- include "labels" . | nindent 4 }}
+    run: db
 spec:
   selector:
     matchLabels:
-      app: db
+      run: db
   template:
     metadata:
       labels:
-        app: db
+        {{- include "labels" . | nindent 8 }}
+        run: db
     spec:
       containers:
         - image: medinvention/mysql:arm
           name: mysql
+          {{- with .Values.db.resources }}
           resources:
-            requests:
-              memory: 64Mi
-              cpu: 250m
-            limits:
-              memory: 128Mi
-              cpu: 500m
+            {{-  toYaml . | nindent 12 }}
+          {{- end }}
           env:
             - name: MYSQL_DATABASE
               value: logs

@@ -2,14 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-server
+  labels:
+    {{- include "labels" . | nindent 4 }}
+    run: api
 spec:
   selector:
     matchLabels:
       run: api
-  replicas: 1
+  replicas: {{ .Values.api.replicas }}
   template:
     metadata:
       labels:
+        {{- include "labels" . | nindent 8 }}
         run: api
     spec:
       containers:

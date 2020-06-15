@@ -1,19 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fluentd
+  name: logger
+  labels:
+    {{- include "labels" . | nindent 4 }}
+    run: logger 
 spec:
   selector:
     matchLabels:
-      app: fluentd
-  replicas: 1
+      run: logger
+  replicas: {{ .Values.logger.replicas }}
   template:
     metadata:
       labels:
-        app: fluentd
+        {{- include "labels" . | nindent 8 }}
+        run: logger 
     spec:
       containers:
-        - name: fluentd
+        - name: logger
           image: medinvention/fluentd-armhf
           command: ['fluentd', '-c', '/fluentd/etc/smsfluentd.conf']
           ports:

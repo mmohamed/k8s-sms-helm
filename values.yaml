@@ -2,8 +2,20 @@ db:
   storage: 2Gi
   username: mysql
   password: mysql
+  reuse: true
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 250m
+    limits:
+      memory: 128Mi
+      cpu: 500m
 
+logger:
+  replicas: 1
+      
 master:
+  replicas: 1
   release: 0.1.0
 
 controller:
@@ -11,14 +23,24 @@ controller:
 
 api:
   release: 0.1.0
-  host: api-host
-  username: admin@medinvention.dev
+  replicas: 1
+  ingress:
+    class: nginx
+    host: 
+    tls: false # tls secret name in the same namespace
+  username: admin@sms.dev
   password: admin
 
 ui:
   release: 0.1.0
-  host: ui-host
+  ingress:
+    class: nginx
+    host: 
+    tls: false # tls secret name in the same namespace
+  replicas: 1
 
 processor:  
   release: 0.1.0
   schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1

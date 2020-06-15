@@ -1,2 +1,23 @@
-1. Get the application URL by running these commands:
+Your Simple Mash Service is deployed now :)
 
+1- For UI Server access, please use 
+    - Username : {{ .Values.api.username }}
+    - Password : {{ .Values.api.password }}
+    {{ if .Values.ui.ingress.host -}}
+    - URL : http{{ if .Values.ui.ingress.tls }}s{{ end }}://{{ .Values.ui.ingress.host }}
+    {{ end }}
+
+2- To activate service, you must injecting same annotations to your deployment to be meshed:
+    - medinvention.dev/sms.group : specifiy the service group (required , like "product")
+    - medinvention.dev/sms.port : container port of your service (default 80, not required)
+    - medinvention.dev/sms.service: kube service name of your app (not required)
+    - medinvention.dev/sms.servicenamespace: kube service namespace of your app (not required)
+    - medinvention.dev/sms.proxyport: proxy container port (default autocalculated, not required)
+
+3- If you want to view logs of:
+    - Controller (for injencting sidecar) : kubectl logs -n {{ .Release.Namespace }} -l "run=controller,app.kubernetes.io/name={{ include "name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+    - Master (for registration process) : kubectl logs -n {{ .Release.Namespace }} -l "run=master,app.kubernetes.io/name={{ include "name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+    - Logger : kubectl logs -n {{ .Release.Namespace }} -l "run=logger,app.kubernetes.io/name={{ include "name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+    - Processor (for data flow processing) : kubectl logs -n {{ .Release.Namespace }} -l "run=processor,app.kubernetes.io/name={{ include "name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+    - Database : kubectl logs -n {{ .Release.Namespace }} -l "run=db,app.kubernetes.io/name={{ include "name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+    - Api Server : kubectl logs -n {{ .Release.Namespace }} -l "run=api,app.kubernetes.io/name={{ include "name" . }},app.kubernetes.io/instance={{ .Release.Name }}"

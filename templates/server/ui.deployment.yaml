@@ -3,15 +3,17 @@ kind: Deployment
 metadata:
   name: ui-server
   labels:
+    {{- include "labels" . | nindent 4 }}
     run: ui
 spec:
-  replicas: 1
+  replicas: {{ .Values.ui.replicas }}
   selector:
     matchLabels:
       run: ui
   template:
     metadata:
       labels:
+        {{- include "labels" . | nindent 8 }}
         run: ui
     spec:
       containers:

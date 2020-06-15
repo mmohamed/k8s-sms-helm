@@ -2,13 +2,20 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: processor
+  labels:
+    {{- include "labels" . | nindent 4 }}
+    run: processor
 spec:
   schedule: {{ .Values.processor.schedule | quote }}
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: {{ .Values.processor.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.processor.failedJobsHistoryLimit }}
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            {{- include "labels" . | nindent 12 }}
+            run: processor
         spec:
           restartPolicy: Never
           containers:

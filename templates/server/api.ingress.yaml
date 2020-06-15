@@ -1,21 +1,30 @@
+{{- if .Values.api.ingress -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: {{ .Values.api.ingress.class | default "nginx" }} 
   name: api-server-ingress
   labels:
+    {{- include "labels" . | nindent 4 }}
     run: api
 spec:
   rules:
-    - host: {{ .Values.api.host | quote }}
+    - host: {{ .Values.api.ingress.host | quote }}
       http:
         paths:
           - backend:
               serviceName: api-server-service
               servicePort: http
             path: /
+  {{ if .Values.ui.ingress.tls }}
   tls:
     - hosts:
-      - {{ .Values.api.host | quote }}
-      secretName: sms-tls
+      - {{ .Values.api.ingress.host | quote }}
+      secretName: {{ .Values.api.ingress.tls }}
+  {{- end }}
+{{- end }}
