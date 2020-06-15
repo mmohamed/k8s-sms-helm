@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller
+spec:
+  selector:
+    matchLabels:
+      run: controller
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: controller
+    spec:
+      serviceAccountName: controller-access
+      containers:
+        - name: controller
+          image: medinvention/k8s-sms-controller:{{ .Values.controller.release }}

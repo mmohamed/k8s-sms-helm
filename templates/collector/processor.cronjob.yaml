@@ -1,0 +1,31 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: processor
+spec:
+  schedule: {{ .Values.processor.schedule | quote }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: server
+              image: medinvention/k8s-sms-processor:{{ .Values.processor.release }}
+              env:
+                - name: DB_NAME
+                  value: logs
+                - name: DB_HOST
+                  value: db-service.{{ .Release.Namespace }}.svc.cluster.local
+                - name: DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: dbsecret
+                      key: username
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: dbsecret
+                      key: password

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+spec:
+  selector:
+    matchLabels:
+      run: api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: api
+    spec:
+      containers:
+        - name: server
+          image: medinvention/k8s-sms-api:{{ .Values.api.release }}
+          ports:
+            - containerPort: 5000
+          env:
+            - name: USERNAME
+              value: {{ .Values.api.username }}
+            - name: PASSWORD
+              value: {{ .Values.api.password }}
+            - name: DB_NAME
+              value: logs
+            - name: DB_HOST
+              value: db-service.{{ .Release.Namespace }}.svc.cluster.local
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dbsecret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dbsecret
+                  key: password

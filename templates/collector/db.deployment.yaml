@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - image: medinvention/mysql:arm
+          name: mysql
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 250m
+            limits:
+              memory: 128Mi
+              cpu: 500m
+          env:
+            - name: MYSQL_DATABASE
+              value: logs
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dbsecret
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dbsecret
+                  key: password
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dbsecret
+                  key: rootpassword
+          ports:
+            - containerPort: 3306
+          lifecycle:
+            postStart:
+              exec:
+                command: ['/bin/sh', '-c', 'sleep 90 && mysql logs -uroot -p"$MYSQL_ROOT_PASSWORD" < /var/db.sql > /tmp/db.log 2>&1 &']
+          volumeMounts:
+            - name: db-persistent-storage
+              mountPath: /var/lib/mysql
+            - name: config-volume
+              mountPath: /var/db.sql
+              subPath: db
+      volumes:
+        - name: db-persistent-storage
+          persistentVolumeClaim:
+            claimName: db-pv-claim
+        - name: config-volume
+          configMap:
+            name: init-files

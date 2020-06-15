@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+        - name: fluentd
+          image: medinvention/fluentd-armhf
+          command: ['fluentd', '-c', '/fluentd/etc/smsfluentd.conf']
+          ports:
+            - containerPort: 5140
+          volumeMounts:
+            - name: config-volume
+              mountPath: /fluentd/etc/smsfluentd.conf
+              subPath: fluentd
+      volumes:
+        - name: config-volume
+          configMap:
+            name: sms-config

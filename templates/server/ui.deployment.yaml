@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-server
+  labels:
+    run: ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: ui
+  template:
+    metadata:
+      labels:
+        run: ui
+    spec:
+      containers:
+        - name: ui-server
+          image: medinvention/k8s-sms-ui:{{ .Values.ui.release }}
+          ports:
+            - containerPort: 80
+    
