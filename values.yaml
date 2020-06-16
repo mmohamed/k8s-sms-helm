@@ -3,6 +3,7 @@ db:
   username: mysql
   password: mysql
   reuse: true
+  release: arm
   resources:
     requests:
       memory: 64Mi
@@ -16,31 +17,31 @@ logger:
       
 master:
   replicas: 1
-  release: 0.1.0
+  release: v0.1.0
 
 controller:
-  release: 0.1.0
+  release: v0.1.0
 
 api:
-  release: 0.1.0
+  release: v0.1.0
   replicas: 1
   ingress:
     class: nginx
-    host: 
+    host: false # api host without protocol
     tls: false # tls secret name in the same namespace
   username: admin@sms.dev
   password: admin
 
 ui:
-  release: 0.1.0
+  release: v0.1.0
   ingress:
     class: nginx
-    host: 
+    host: false # ui host without protocol
     tls: false # tls secret name in the same namespace
   replicas: 1
 
 processor:  
-  release: 0.1.0
+  release: v0.1.0
   schedule: "*/5 * * * *"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1

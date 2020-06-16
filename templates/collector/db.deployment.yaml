@@ -16,7 +16,7 @@ spec:
         run: db
     spec:
       containers:
-        - image: medinvention/mysql:arm
+        - image: medinvention/mysql:{{ .Values.db.release }}
           name: mysql
           {{- with .Values.db.resources }}
           resources:
