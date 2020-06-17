@@ -12,6 +12,9 @@ db:
       memory: 128Mi
       cpu: 500m
 
+sidecar:
+  release: v0.1.0
+
 logger:
   replicas: 1
   release: v0.1.0

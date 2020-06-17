@@ -20,3 +20,6 @@ spec:
       containers:
         - name: controller
           image: medinvention/k8s-sms-controller:{{ .Values.controller.release }}
+          env:
+            - name: RELEASE
+              value: {{ .Values.sidecar.release }}
