@@ -3,7 +3,7 @@ db:
   username: mysql
   password: mysql
   reuse: true
-  release: arm
+  release: 5.6
   resources:
     requests:
       memory: 64Mi
@@ -14,6 +14,7 @@ db:
 
 logger:
   replicas: 1
+  release: v0.1.0
       
 master:
   replicas: 1

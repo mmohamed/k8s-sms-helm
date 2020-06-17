@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: logger
-          image: medinvention/fluentd-armhf
+          image: medinvention/k8s-sms-logger:{{ .Values.logger.release }}
           command: ['fluentd', '-c', '/fluentd/etc/smsfluentd.conf']
           ports:
             - containerPort: 5140
