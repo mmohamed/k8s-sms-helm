@@ -1,10 +1,12 @@
 Your Simple Mash Service is deployed now :)
 
-1- For UI Server access, please use 
+1- For API Server access, please use 
     - Username : {{ .Values.api.username }}
     - Password : {{ .Values.api.password }}
     {{ if .Values.ui.ingress.host -}}
     - URL : http{{ if .Values.ui.ingress.tls }}s{{ end }}://{{ .Values.ui.ingress.host }}
+    {{ else -}}
+    - URL : http://api-server-service.{{ .Release.Namespace }}.svc.cluster.local (inside cluster)
     {{ end }}
 
 2- To activate service, you must injecting same annotations to your deployment to be meshed:
